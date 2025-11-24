@@ -29,28 +29,38 @@ export class AssetLoader {
 
   public async loadAssets(): Promise<void> {
     const promises: Promise<void>[] = [];
+    const basePath = import.meta.env.VITE_BASE_PATH || "";
 
-    // Textures
-    promises.push(this.loadTexture("background", "/assets/background.png"));
-    promises.push(this.loadTexture("bozo_sentado", "/assets/bozo_sentado.png"));
-    promises.push(this.loadTexture("bozo_chora", "/assets/bozo_chora.png"));
-    promises.push(this.loadTexture("xandao", "/assets/xandao.png"));
-    promises.push(this.loadTexture("solda", "/assets/solda.png"));
-    promises.push(this.loadTexture("solda_quente", "/assets/solda_quente.png"));
-    promises.push(this.loadTexture("cursor_gado", "/assets/cursor_gado.png"));
-    promises.push(
-      this.loadTexture("menu_background", "/assets/menu_background.png"),
-    );
+    const assets = {
+      textures: {
+        background: "assets/background.png",
+        bozo_sentado: "assets/bozo_sentado.png",
+        bozo_chora: "assets/bozo_chora.png",
+        xandao: "assets/xandao.png",
+        solda: "assets/solda.png",
+        solda_quente: "assets/solda_quente.png",
+        cursor_gado: "assets/cursor_gado.png",
+        menu_background: "assets/menu_background.png",
+      },
+      audio: {
+        menu_theme: "assets/menu_theme.ogg",
+        intro: "assets/song_intro.ogg",
+        loop: "assets/song_loop.ogg",
+        start: "assets/vaca.ogg",
+        gameover: "assets/gameover.ogg",
+        miau: "assets/miau.ogg",
+        bozo_telefone: "assets/bozo_telefone.ogg",
+        soldering: "assets/soldering.ogg",
+      },
+    };
 
-    // Audio
-    promises.push(this.loadAudio("menu_theme", "/assets/menu_theme.ogg"));
-    promises.push(this.loadAudio("intro", "/assets/song_intro.ogg"));
-    promises.push(this.loadAudio("loop", "/assets/song_loop.ogg"));
-    promises.push(this.loadAudio("start", "/assets/vaca.ogg"));
-    promises.push(this.loadAudio("gameover", "/assets/gameover.ogg"));
-    promises.push(this.loadAudio("miau", "/assets/miau.ogg"));
-    promises.push(this.loadAudio("bozo_telefone", "/assets/bozo_telefone.ogg"));
-    promises.push(this.loadAudio("soldering", "/assets/soldering.ogg"));
+    for (const [key, path] of Object.entries(assets.textures)) {
+      promises.push(this.loadTexture(key, `${basePath}${path}`));
+    }
+
+    for (const [key, path] of Object.entries(assets.audio)) {
+      promises.push(this.loadAudio(key, `${basePath}${path}`));
+    }
 
     await Promise.all(promises);
   }
