@@ -36,7 +36,11 @@ export class GameOverScreen extends Group {
     this.retryButton.position.set(0, 50, 0);
     this.add(this.retryButton);
 
-    this.retryButton2 = new TextButton("(esse jogo não dá para ganhar)", 30, onRetry);
+    this.retryButton2 = new TextButton(
+      "(esse jogo não dá para ganhar)",
+      30,
+      onRetry,
+    );
     this.retryButton2.position.set(0, 0, 0);
     this.add(this.retryButton2);
 
