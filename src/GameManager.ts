@@ -14,8 +14,8 @@ import {
 } from "three";
 import { AnkleHitbox } from "./AnkleHitbox";
 import { AssetLoader } from "./AssetLoader";
-import { Bolsonaro } from "./Bolsonaro";
 import { BossHealthBar } from "./BossHealthBar";
+import { Bozo } from "./Bozo";
 import { GAME_HEIGHT, GAME_WIDTH } from "./constants";
 import { GameOverScreen } from "./GameOverScreen";
 import { IntroAnimation } from "./IntroAnimation";
@@ -56,7 +56,7 @@ export class GameManager {
   private solderingIron!: SolderingIron;
   private ankleHitbox!: AnkleHitbox;
   private bossHealthBar!: BossHealthBar;
-  private bolsonaro!: Bolsonaro;
+  private bozo!: Bozo;
   private xandao!: Xandao;
   private menuScreen!: MenuScreen;
   private gameOverScreen!: GameOverScreen;
@@ -161,7 +161,6 @@ export class GameManager {
 
     // --- Background ---
     const bgTexture = this.assetLoader.getTexture("background");
-    // Use original 1920x1080 size for background to cover the 4:3 (1440x1080) viewport
     // This effectively "zooms" or crops the background
     const bgGeometry = new PlaneGeometry(1920, 1080);
     const bgMaterial = new MeshBasicMaterial({ map: bgTexture });
@@ -177,7 +176,7 @@ export class GameManager {
       this.assetLoader.getAudio("soldering"),
     );
 
-    this.bolsonaro = new Bolsonaro(this.assetLoader.getTexture("bolsonaro"));
+    this.bozo = new Bozo(this.assetLoader.getTexture("bozo_sentado"));
     this.ankleHitbox = new AnkleHitbox(this.camera, this.solderingIron);
     this.xandao = new Xandao(this.assetLoader.getTexture("xandao"));
 
@@ -185,10 +184,6 @@ export class GameManager {
 
     // --- Mute Button ---
     this.muteButton = new MuteButton(this.listener);
-    // Position bottom left with margin
-    // Game is 1440x1080. Center is 0,0.
-    // Left edge is -720. Bottom edge is -540.
-    // Camera is at z=5, looking at z=0. Place button at z=4.5 to be in front of everything but visible.
     this.muteButton.position.set(-650 + 80, -540 + 50, 4.5);
     this.scene.add(this.muteButton);
 
@@ -196,7 +191,7 @@ export class GameManager {
     this.menuScreen = new MenuScreen(() => this.startIntroAnimation());
     this.gameOverScreen = new GameOverScreen(
       () => this.resetGame(),
-      this.assetLoader.getTexture("bozo"),
+      this.assetLoader.getTexture("bozo_chora"),
     );
 
     this.scene.add(this.menuScreen);
@@ -264,7 +259,7 @@ export class GameManager {
   private startGame() {
     this.state = "PLAYING";
 
-    this.scene.add(this.bolsonaro);
+    this.scene.add(this.bozo);
     this.scene.add(this.ankleHitbox);
     this.scene.add(this.solderingIron);
     this.scene.add(this.xandao);
@@ -294,7 +289,7 @@ export class GameManager {
     this.scene.remove(this.solderingIron.smokeSystem);
     this.scene.remove(this.ankleHitbox);
     this.scene.remove(this.bossHealthBar);
-    this.scene.remove(this.bolsonaro);
+    this.scene.remove(this.bozo);
     this.scene.remove(this.xandao);
 
     this.gameOverScreen.reset();

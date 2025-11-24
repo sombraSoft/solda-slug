@@ -1,5 +1,8 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  // Add your Vite configuration here
+  base: process.env.BASE_PATH,
+  build: {
+    chunkSizeWarningLimit: 600,
+  },
 });

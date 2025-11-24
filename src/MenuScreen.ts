@@ -15,7 +15,7 @@ export class MenuScreen extends Group {
     super();
 
     // Title
-    const titleTexture = this.createTexture("TORNOZELEIRA SIMULATOR", 60);
+    const titleTexture = this.createTexture("BOZO SOLDA SLUG", 60);
     const titleMaterial = new SpriteMaterial({ map: titleTexture });
     const title = new Sprite(titleMaterial);
     title.scale.set(titleTexture.image.width, titleTexture.image.height, 1);

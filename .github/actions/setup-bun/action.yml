@@ -1,0 +1,28 @@
+name: 'Setup Bun and Install Dependencies'
+description: 'Sets up Bun, caches dependencies, and installs them.'
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Get bun cache directory
+      id: bun-cache
+      run: echo "dir=$(bun pm cache)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      id: cache-deps
+      with:
+        path: ${{ steps.bun-cache.outputs.dir }}
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    - name: Install dependencies
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+      run: bun install --frozen-lockfile
+      shell: bash

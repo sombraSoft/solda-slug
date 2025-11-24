@@ -32,10 +32,8 @@ export class AssetLoader {
 
     // Textures
     promises.push(this.loadTexture("background", "/assets/background.png"));
-    promises.push(
-      this.loadTexture("bolsonaro", "/assets/bozo_sentado.png"),
-    );
-    promises.push(this.loadTexture("bozo", "/assets/bozo_chora.png"));
+    promises.push(this.loadTexture("bozo_sentado", "/assets/bozo_sentado.png"));
+    promises.push(this.loadTexture("bozo_chora", "/assets/bozo_chora.png"));
     promises.push(this.loadTexture("xandao", "/assets/xandao.png"));
     promises.push(this.loadTexture("solda", "/assets/solda.png"));
     promises.push(this.loadTexture("solda_quente", "/assets/solda_quente.png"));

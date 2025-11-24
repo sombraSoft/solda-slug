@@ -7,7 +7,7 @@ import {
   Raycaster,
   type Vector2,
 } from "three";
-import { ANKLE_MONITOR_OFFSET, BOLSONARO_POSITION } from "./constants";
+import { ANKLE_MONITOR_OFFSET, BOZO_POSITION } from "./constants";
 import type { SolderingIron } from "./SolderingIron";
 
 export class AnkleHitbox extends Mesh {
@@ -27,9 +27,9 @@ export class AnkleHitbox extends Mesh {
     super(geometry, material);
 
     this.position.set(
-      BOLSONARO_POSITION.x + ANKLE_MONITOR_OFFSET.x,
-      BOLSONARO_POSITION.y + ANKLE_MONITOR_OFFSET.y,
-      BOLSONARO_POSITION.z + ANKLE_MONITOR_OFFSET.z,
+      BOZO_POSITION.x + ANKLE_MONITOR_OFFSET.x,
+      BOZO_POSITION.y + ANKLE_MONITOR_OFFSET.y,
+      BOZO_POSITION.z + ANKLE_MONITOR_OFFSET.z,
     );
     this.renderOrder = 2;
   }
@@ -40,7 +40,7 @@ export class AnkleHitbox extends Mesh {
 
       if (intersects.length > 0) {
         this.isBeingHit = true;
-        this.health -= 20 * deltaTime;
+        this.health -= 10 * deltaTime;
 
         if (this.health < 0) this.health = 0;
         this.solderingIron.startSound();
