@@ -30,6 +30,10 @@ export class MenuScreen extends Group {
     this.position.z = 4; // Ensure it's on top (camera is at z=5)
   }
 
+  public reset() {
+    this.startButton.onHover(false);
+  }
+
   private createTexture(text: string, fontSize: number): CanvasTexture {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

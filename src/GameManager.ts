@@ -137,6 +137,7 @@ export class GameManager {
 
     // Listen for mouseup on window to catch releases outside the canvas
     window.addEventListener("mouseup", this.onMouseUp.bind(this));
+    window.addEventListener("keydown", this.onKeyDown.bind(this));
 
     // Initial Resize
     this.onResize();
@@ -325,6 +326,28 @@ export class GameManager {
     this.startIntroAnimation();
   }
 
+  private returnToMenu() {
+    this.state = "MENU";
+    this.canInteract = true;
+    const container = document.getElementById("game-container");
+    if (container) container.classList.remove("no-cursor");
+    this.scene.remove(this.solderingIron);
+    this.scene.remove(this.solderingIron.smokeSystem);
+    this.scene.remove(this.ankleHitbox);
+    this.scene.remove(this.bossHealthBar);
+    this.scene.remove(this.bozo);
+    this.scene.remove(this.xandao);
+
+    this.menuScreen.reset();
+    this.scene.add(this.menuScreen);
+    this.solderingIron.stopSound();
+
+    // Stop Background Music
+    if (this.introSound.isPlaying) this.introSound.stop();
+    if (this.loopSound.isPlaying) this.loopSound.stop();
+    this.musicState = "idle";
+  }
+
   private onResize() {
     const container = document.getElementById("game-container");
     if (!container) return;
@@ -410,6 +433,12 @@ export class GameManager {
   private onMouseUp(event: MouseEvent) {
     if (this.state === "PLAYING" && event.button === 0) {
       this.solderingIron.cool();
+    }
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    if (this.state === "PLAYING" && event.key === "Escape") {
+      this.returnToMenu();
     }
   }
 
