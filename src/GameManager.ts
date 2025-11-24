@@ -23,7 +23,7 @@ import { LoadingScreen } from "./LoadingScreen";
 import { MenuScreen } from "./MenuScreen";
 import { MuteButton } from "./MuteButton";
 import { SolderingIron } from "./SolderingIron";
-import type { TextButton } from "./TextButton";
+import { TextButton } from "./TextButton";
 import { Xandao } from "./Xandao";
 
 type GameState =
@@ -61,6 +61,7 @@ export class GameManager {
   private menuScreen!: MenuScreen;
   private gameOverScreen!: GameOverScreen;
   private muteButton!: MuteButton;
+  private fullscreenButton!: TextButton;
   private mainBackground!: Mesh;
   private introAnimation!: IntroAnimation;
 
@@ -143,9 +144,29 @@ export class GameManager {
     canvas.addEventListener("click", this.onClick.bind(this));
     canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
 
+    // Touch Listeners
+    canvas.addEventListener("touchstart", this.onTouchStart.bind(this), {
+      passive: false,
+    });
+    canvas.addEventListener("touchmove", this.onTouchMove.bind(this), {
+      passive: false,
+    });
+    canvas.addEventListener("touchend", this.onTouchEnd.bind(this), {
+      passive: false,
+    });
+
     // Listen for mouseup on window to catch releases outside the canvas
     window.addEventListener("mouseup", this.onMouseUp.bind(this));
     window.addEventListener("keydown", this.onKeyDown.bind(this));
+
+    // Listen for fullscreen changes
+    document.addEventListener("fullscreenchange", () => {
+      // Delay resize slightly to ensure screen dimensions are updated
+      setTimeout(() => {
+        this.onResize();
+        this.checkOrientation();
+      }, 100);
+    });
 
     // Initial Resize
     this.onResize();
@@ -194,8 +215,50 @@ export class GameManager {
 
     // --- Mute Button ---
     this.muteButton = new MuteButton(this.listener);
-    this.muteButton.position.set(-650 + 80, -540 + 50, 4.5);
+    // Position is center of sprite, so offset by half width to bring it fully in view
+    const muteButtonWidth = this.muteButton.scale.x;
+    const bottomMargin = -GAME_HEIGHT / 2 + 40; // Standard vertical margin
+    const horizontalMargin = 40; // Standard horizontal margin
+
+    this.muteButton.position.set(
+      -GAME_WIDTH / 2 + muteButtonWidth / 2 + horizontalMargin,
+      bottomMargin,
+      4.5,
+    );
     this.scene.add(this.muteButton);
+
+    // --- Fullscreen Button ---
+    this.fullscreenButton = new TextButton("TELA CHEIA", 24, async () => {
+      const container = document.getElementById("game-container");
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      try {
+        if (!document.fullscreenElement) {
+          if (container) {
+            await container.requestFullscreen();
+            if (isMobile) {
+              // biome-ignore lint/suspicious/noExplicitAny: Screen Orientation API typings may be incomplete
+              await (screen.orientation as any).lock("landscape");
+            }
+          }
+        } else {
+          await document.exitFullscreen();
+          if (isMobile) {
+            // biome-ignore lint/suspicious/noExplicitAny: Screen Orientation API typings may be incomplete
+            (screen.orientation as any).unlock();
+          }
+        }
+      } catch (err) {
+        console.error("Fullscreen or orientation lock failed:", err);
+      }
+    });
+    const fullscreenButtonWidth = this.fullscreenButton.scale.x;
+    this.fullscreenButton.position.set(
+      GAME_WIDTH / 2 - fullscreenButtonWidth / 2 - horizontalMargin,
+      bottomMargin,
+      4.5,
+    );
+    this.scene.add(this.fullscreenButton);
 
     // --- Screens ---
     this.menuScreen = new MenuScreen(
@@ -379,14 +442,59 @@ export class GameManager {
     }
   }
 
+  private checkOrientation() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const overlay = document.getElementById("rotate-device-overlay");
+
+    if (isMobile && overlay) {
+      const isPortrait = window.innerHeight > window.innerWidth;
+      if (isPortrait && document.fullscreenElement) {
+        overlay.style.display = "flex";
+      } else {
+        overlay.style.display = "none";
+      }
+    }
+  }
+
   private onResize() {
+    this.checkOrientation();
     const container = document.getElementById("game-container");
     if (!container) return;
 
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
 
+    // Calculate target dimensions (4:3 aspect ratio)
+    const targetAspect = GAME_WIDTH / GAME_HEIGHT;
+    const containerAspect = containerWidth / containerHeight;
+
+    let width: number;
+    let height: number;
+
+    if (containerAspect > targetAspect) {
+      // Container is wider than 4:3 -> constrain by height
+      height = containerHeight;
+      width = height * targetAspect;
+    } else {
+      // Container is taller than 4:3 -> constrain by width
+      width = containerWidth;
+      height = width / targetAspect;
+    }
+
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(width, height);
+  }
+
+  private updateMousePosition(clientX: number, clientY: number) {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+
+    // Calculate mouse position relative to the canvas
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // Normalize to -1 to +1
+    this.mouse.x = (x / rect.width) * 2 - 1;
+    this.mouse.y = -(y / rect.height) * 2 + 1;
   }
 
   private onMouseMove(event: MouseEvent) {
@@ -394,25 +502,61 @@ export class GameManager {
 
     this.unlockAudio();
 
-    const rect = this.renderer.domElement.getBoundingClientRect();
-
-    // Calculate mouse position relative to the canvas
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // Normalize to -1 to +1
-    this.mouse.x = (x / rect.width) * 2 - 1;
-    this.mouse.y = -(y / rect.height) * 2 + 1;
+    this.updateMousePosition(event.clientX, event.clientY);
 
     // Update hover states for buttons
     if (this.muteButton) {
       this.checkButtonHover(this.muteButton);
+    }
+    if (this.fullscreenButton) {
+      this.checkButtonHover(this.fullscreenButton);
     }
 
     if (this.state === "MENU" && this.menuScreen) {
       this.checkButtonHover(this.menuScreen.startButton);
     } else if (this.state === "GAME_OVER" && this.gameOverScreen) {
       this.checkButtonHover(this.gameOverScreen.retryButton);
+    }
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    event.preventDefault(); // Prevent scrolling
+    if (this.state === "LOADING") return;
+
+    this.unlockAudio();
+
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      if (touch) {
+        this.updateMousePosition(touch.clientX, touch.clientY);
+
+        // Trigger click logic for buttons
+        this.onClick();
+
+        // Trigger heat logic
+        if (this.state === "PLAYING") {
+          this.solderingIron.heat();
+        }
+      }
+    }
+  }
+
+  private onTouchMove(event: TouchEvent) {
+    event.preventDefault();
+    if (this.state === "LOADING") return;
+
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      if (touch) {
+        this.updateMousePosition(touch.clientX, touch.clientY);
+      }
+    }
+  }
+
+  private onTouchEnd(event: TouchEvent) {
+    event.preventDefault();
+    if (this.state === "PLAYING") {
+      this.solderingIron.cool();
     }
   }
 
@@ -435,6 +579,15 @@ export class GameManager {
       if (intersects.length > 0) {
         this.muteButton.onClick();
         return; // Don't trigger other clicks if mute button was clicked
+      }
+    }
+
+    // Check Fullscreen Button
+    if (this.fullscreenButton) {
+      const intersects = this.raycaster.intersectObject(this.fullscreenButton);
+      if (intersects.length > 0) {
+        this.fullscreenButton.onClick();
+        return;
       }
     }
 
