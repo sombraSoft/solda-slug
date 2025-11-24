@@ -15,6 +15,7 @@ export class GameOverScreen extends Group {
   private bozoSprite: Sprite;
   private xandaoSprite: Sprite;
   private timeElapsed: number = 0;
+  private explain: Sprite | null = null;
 
   constructor(
     onRetry: () => void,
@@ -23,8 +24,7 @@ export class GameOverScreen extends Group {
   ) {
     super();
 
-    // Game Over Text
-    const titleTexture = this.createTexture("VOCÊ FOI PRESO", 60, "#ff0000");
+    const titleTexture = this.createTexture("VOCÊ FOI PRESO", 40, "#ff0000");
     const titleMaterial = new SpriteMaterial({ map: titleTexture });
     const title = new Sprite(titleMaterial);
     title.scale.set(titleTexture.image.width, titleTexture.image.height, 1);
@@ -32,7 +32,7 @@ export class GameOverScreen extends Group {
     this.add(title);
 
     // Retry Button
-    this.retryButton = new TextButton("TENTAR DE NOVO?", 40, onRetry);
+    this.retryButton = new TextButton("TENTAR DE NOVO?", 50, onRetry);
     this.retryButton.position.set(0, 50, 0);
     this.add(this.retryButton);
 
@@ -72,6 +72,33 @@ export class GameOverScreen extends Group {
     this.position.z = 4; // Ensure it's on top (camera is at z=5)
   }
 
+  public show(reason: "destroyed" | "caught") {
+    this.reset();
+
+    if (this.explain) {
+      this.remove(this.explain);
+      (this.explain.material as SpriteMaterial).map?.dispose();
+      this.explain.material.dispose();
+      this.explain = null;
+    }
+
+    const explainText =
+      reason === "destroyed"
+        ? "Você destruiu a tornozeleira mas o xandão\ndecretou prisão preventiva e"
+        : "O Xandão te pegou na tampinha e";
+
+    const explainTexture = this.createTexture(explainText, 30, "#ff0000");
+    const explainMaterial = new SpriteMaterial({ map: explainTexture });
+    this.explain = new Sprite(explainMaterial);
+    this.explain.scale.set(
+      explainTexture.image.width,
+      explainTexture.image.height,
+      1,
+    );
+    this.explain.position.set(0, 230, 0);
+    this.add(this.explain);
+  }
+
   public update(deltaTime: number) {
     this.timeElapsed += deltaTime;
     // Fade in over 2 seconds
@@ -97,13 +124,25 @@ export class GameOverScreen extends Group {
 
     const font = `${fontSize}px "Press Start 2P", sans-serif`;
     ctx.font = font;
-    const textMetrics = ctx.measureText(text);
-    const width = textMetrics.width;
-    const height = fontSize * 1.5;
+
+    const lines = text.split("\n");
+
+    let maxWidth = 0;
+    for (const line of lines) {
+      const metrics = ctx.measureText(line);
+      if (metrics.width > maxWidth) {
+        maxWidth = metrics.width;
+      }
+    }
+
+    const heightPerLine = fontSize * 1.5;
+    const width = maxWidth;
+    const height = heightPerLine * lines.length;
 
     canvas.width = width;
     canvas.height = height;
 
+    // Font settings need to be reapplied after canvas resize
     ctx.font = font;
     ctx.fillStyle = color;
     ctx.textBaseline = "middle";
@@ -111,7 +150,16 @@ export class GameOverScreen extends Group {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 4;
     ctx.shadowOffsetY = 4;
-    ctx.fillText(text, 0, height / 2);
+    ctx.textAlign = "center";
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line) {
+        const x = width / 2;
+        const y = i * heightPerLine + heightPerLine / 2;
+        ctx.fillText(line, x, y);
+      }
+    }
 
     const texture = new CanvasTexture(canvas);
     texture.minFilter = LinearFilter;

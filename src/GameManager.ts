@@ -300,7 +300,7 @@ export class GameManager {
     }
   }
 
-  private endGame() {
+  private endGame(reason: "destroyed" | "caught") {
     this.state = "GAME_OVER";
     this.canInteract = false;
     const container = document.getElementById("game-container");
@@ -312,7 +312,7 @@ export class GameManager {
     this.scene.remove(this.bozo);
     this.scene.remove(this.xandao);
 
-    this.gameOverScreen.reset();
+    this.gameOverScreen.show(reason);
     this.scene.add(this.gameOverScreen);
     this.solderingIron.stopSound();
 
@@ -485,7 +485,7 @@ export class GameManager {
       this.bossHealthBar.update(this.ankleHitbox.health);
 
       if (this.ankleHitbox.health <= 0) {
-        this.endGame();
+        this.endGame("destroyed");
         return;
       }
 
@@ -499,7 +499,7 @@ export class GameManager {
 
       if (this.xandao.isPeeking()) {
         if (this.ankleHitbox.isBeingHit) {
-          this.endGame();
+          this.endGame("caught");
         }
       }
 
