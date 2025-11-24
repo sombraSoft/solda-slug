@@ -548,6 +548,9 @@ export class GameManager {
     event.preventDefault();
     if (this.state === "LOADING") return;
 
+    this.inputType = "touch";
+    this.unlockAudio();
+
     if (event.touches.length > 0) {
       const touch = event.touches[0];
       if (touch) {
@@ -680,8 +683,13 @@ export class GameManager {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private unlockAudio() {
+  private async unlockAudio() {
     if (this.audioUnlocked) return;
+
+    // Resume the audio context if it's suspended
+    if (this.listener.context.state === "suspended") {
+      await this.listener.context.resume();
+    }
 
     if (this.musicState === "idle" && this.menuThemeSound.buffer) {
       this.menuThemeSound.play();
