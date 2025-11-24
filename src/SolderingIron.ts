@@ -1,112 +1,100 @@
-import * as THREE from "three";
+import {
+  Audio,
+  type AudioListener,
+  type OrthographicCamera,
+  type PerspectiveCamera,
+  Sprite,
+  SpriteMaterial,
+  type Texture,
+  type Vector2,
+  Vector3,
+} from "three";
 import { SOLDERING_IRON_SCALE } from "./constants";
+import { SmokeSystem } from "./SmokeSystem";
 
-export class SolderingIron extends THREE.Sprite {
-	private defaultTexture: THREE.Texture;
-	private hotTexture: THREE.Texture;
-	private textureLoader = new THREE.TextureLoader();
-	private sound: THREE.Audio;
-	public isSoldering: boolean = false;
+export class SolderingIron extends Sprite {
+  private defaultTexture: Texture;
+  private hotTexture: Texture;
+  private sound: Audio;
+  public isSoldering: boolean = false;
+  public smokeSystem: SmokeSystem;
 
-	constructor(
-		private camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
-	) {
-		const material = new THREE.SpriteMaterial({ color: 0xff0000 });
-		super(material);
+  constructor(
+    private camera: PerspectiveCamera | OrthographicCamera,
+    audioListener: AudioListener,
+    defaultTexture: Texture,
+    hotTexture: Texture,
+    soundBuffer: AudioBuffer,
+  ) {
+    const material = new SpriteMaterial({
+      map: defaultTexture,
+      depthTest: false,
+    });
+    super(material);
 
-		this.defaultTexture = this.textureLoader.load(
-			"/assets/solda.png",
-			(texture) => {
-				texture.magFilter = THREE.NearestFilter;
-				texture.colorSpace = THREE.SRGBColorSpace;
-				this.material.map = texture;
-				this.material.color.set(0xffffff);
-				this.material.needsUpdate = true;
-			},
-		);
+    this.defaultTexture = defaultTexture;
+    this.hotTexture = hotTexture;
 
-		this.hotTexture = this.textureLoader.load(
-			"/assets/solda_quente.png",
-			(texture) => {
-				texture.magFilter = THREE.NearestFilter;
-				texture.colorSpace = THREE.SRGBColorSpace;
-			},
-		);
+    this.sound = new Audio(audioListener);
+    this.sound.setBuffer(soundBuffer);
+    this.sound.setLoop(true);
 
-		const listener = new THREE.AudioListener();
-		this.camera.add(listener);
-		this.sound = new THREE.Audio(listener);
-		const audioLoader = new THREE.AudioLoader();
-		audioLoader.load("/assets/soldering.ogg", (buffer) => {
-			this.sound.setBuffer(buffer);
-			this.sound.setLoop(true);
-		});
+    this.scale.set(SOLDERING_IRON_SCALE, SOLDERING_IRON_SCALE, 1);
+    this.center.set(0.06, 0.95);
+    this.renderOrder = 201; // Ensure it renders on top of Xandao
 
-		this.scale.set(SOLDERING_IRON_SCALE, SOLDERING_IRON_SCALE, 1);
-		this.center.set(0.06, 0.95);
-		this.renderOrder = 100; // Ensure it renders on top of UI
+    this.smokeSystem = new SmokeSystem();
+  }
 
-		window.addEventListener("mousedown", this.onMouseDown.bind(this));
-		window.addEventListener("mouseup", this.onMouseUp.bind(this));
-		window.addEventListener("mousemove", this.onMouseMove.bind(this));
-	}
+  public update(deltaTime: number, mouse: Vector2) {
+    this.updatePosition(mouse);
+    this.smokeSystem.update(deltaTime);
 
-	private onMouseDown(event: MouseEvent): void {
-		if (event.button === 0) {
-			this.heat();
-		}
-	}
+    // Only smoke if we are soldering AND hitting the target (sound is playing)
+    if (this.isSoldering && this.sound.isPlaying) {
+      // Spawn smoke at the tip (current position)
+      // Since center is set to the tip, this.position is the tip location
+      this.smokeSystem.spawn(this.position);
+    }
+  }
 
-	private onMouseUp(event: MouseEvent): void {
-		if (event.button === 0) {
-			this.cool();
-		}
-	}
+  private updatePosition(mouse: Vector2) {
+    const mouse3D = new Vector3(mouse.x, mouse.y, 0.5);
+    mouse3D.unproject(this.camera);
+    this.position.copy(mouse3D);
+    // z=4.8 to be in front of mute button (z=4.5) but behind camera (z=5)
+    this.position.z = 4.8;
+  }
 
-	private onMouseMove(event: MouseEvent): void {
-		const gameWidth = 1920;
-		const gameHeight = 1080;
-		const aspectRatio = gameWidth / gameHeight;
-		const { innerWidth, innerHeight } = window;
+  public heat(): void {
+    this.isSoldering = true;
+    if (this.hotTexture) {
+      this.material.map = this.hotTexture;
+      this.material.needsUpdate = true;
+    }
+  }
 
-		let newWidth: number, newHeight: number;
+  public cool(): void {
+    this.isSoldering = false;
+    if (this.defaultTexture) {
+      this.material.map = this.defaultTexture;
+      this.material.needsUpdate = true;
+    }
+    this.stopSound();
+  }
 
-		if (innerWidth / innerHeight > aspectRatio) {
-			newHeight = innerHeight;
-			newWidth = newHeight * aspectRatio;
-		} else {
-			newWidth = innerWidth;
-			newHeight = newWidth / aspectRatio;
-		}
+  public startSound(): void {
+    if (this.sound && !this.sound.isPlaying) {
+      this.sound.play();
+    }
+  }
 
-		const mouse = new THREE.Vector3();
-		mouse.x = (event.clientX / newWidth) * 2 - 1;
-		mouse.y = -(event.clientY / newHeight) * 2 + 1;
-		mouse.z = 0.5;
+  public stopSound(): void {
+    if (this.sound?.isPlaying) this.sound.stop();
+  }
 
-		mouse.unproject(this.camera);
-
-		this.position.copy(mouse);
-		this.position.z = 1;
-	}
-
-	public heat(): void {
-		this.isSoldering = true;
-		if (this.hotTexture) {
-			this.material.map = this.hotTexture;
-			this.material.needsUpdate = true;
-		}
-		if (this.sound && !this.sound.isPlaying) {
-			this.sound.play();
-		}
-	}
-
-	public cool(): void {
-		this.isSoldering = false;
-		if (this.defaultTexture) {
-			this.material.map = this.defaultTexture;
-			this.material.needsUpdate = true;
-		}
-		if (this.sound?.isPlaying) this.sound.stop();
-	}
+  public reset(): void {
+    this.cool();
+    this.smokeSystem.reset();
+  }
 }
