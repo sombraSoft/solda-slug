@@ -10,11 +10,9 @@
 
 ---
 
-## 🎮 JOGUE AGORA! 🎮
-
-O plano é infalível (ou não). Clique no link abaixo para começar a operação.
-
-**[CLIQUE AQUI PARA JOGAR](https://sombrasoft.github.io/solda-slug/)**
+<h2 align="center">🎮 JOGUE AGORA! 🎮</h2>
+<p align="center">O plano é infalível (ou não). Clique no link abaixo para começar a operação.</p>
+<p align="center"><a href="https://sombrasoft.github.io/solda-slug/"><strong>CLIQUE AQUI PARA JOGAR</strong></a></p>
 
 ---
 
