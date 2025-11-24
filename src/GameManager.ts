@@ -40,6 +40,7 @@ export class GameManager {
   private clock: Clock;
   private raycaster: Raycaster;
   private mouse: Vector2;
+  public inputType: "mouse" | "touch" = "mouse";
 
   private state: GameState = "LOADING";
   private canInteract: boolean = true;
@@ -500,6 +501,7 @@ export class GameManager {
   private onMouseMove(event: MouseEvent) {
     if (this.state === "LOADING") return;
 
+    this.inputType = "mouse";
     this.unlockAudio();
 
     this.updateMousePosition(event.clientX, event.clientY);
@@ -523,6 +525,7 @@ export class GameManager {
     event.preventDefault(); // Prevent scrolling
     if (this.state === "LOADING") return;
 
+    this.inputType = "touch";
     this.unlockAudio();
 
     if (event.touches.length > 0) {
@@ -637,8 +640,8 @@ export class GameManager {
     if (this.state === "INTRO_ANIMATION") {
       this.introAnimation.update(deltaTime);
     } else if (this.state === "PLAYING") {
-      this.solderingIron.update(deltaTime, this.mouse);
-      this.ankleHitbox.update(deltaTime, this.mouse);
+      this.solderingIron.update(deltaTime, this.mouse, this.inputType);
+      this.ankleHitbox.update(deltaTime);
       this.xandao.update(deltaTime);
       this.bossHealthBar.update(this.ankleHitbox.health);
 

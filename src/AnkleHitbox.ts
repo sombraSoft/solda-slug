@@ -1,11 +1,11 @@
 import {
+  Box3,
   BoxGeometry,
   Mesh,
   MeshBasicMaterial,
   type OrthographicCamera,
   type PerspectiveCamera,
-  Raycaster,
-  type Vector2,
+  Vector3,
 } from "three";
 import { ANKLE_MONITOR_OFFSET, BOZO_POSITION } from "./constants";
 import type { SolderingIron } from "./SolderingIron";
@@ -13,7 +13,8 @@ import type { SolderingIron } from "./SolderingIron";
 export class AnkleHitbox extends Mesh {
   public health: number = 100;
   public isBeingHit = false;
-  private raycaster = new Raycaster();
+  private hitbox: Box3;
+
   constructor(
     private camera: OrthographicCamera | PerspectiveCamera,
     private solderingIron: SolderingIron,
@@ -32,13 +33,19 @@ export class AnkleHitbox extends Mesh {
       BOZO_POSITION.z + ANKLE_MONITOR_OFFSET.z,
     );
     this.renderOrder = 2;
-  }
-  public update(deltaTime: number, mouse: Vector2) {
-    if (this.solderingIron.isSoldering) {
-      this.raycaster.setFromCamera(mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(this);
 
-      if (intersects.length > 0) {
+    // Create and cache the hitbox
+    this.hitbox = new Box3().setFromObject(this);
+  }
+  public update(deltaTime: number) {
+    if (this.solderingIron.isSoldering) {
+      // Create a small hitbox for the tip of the iron
+      const ironTipHitbox = new Box3().setFromCenterAndSize(
+        this.solderingIron.position,
+        new Vector3(10, 10, 10), // A small 10x10x10 box
+      );
+
+      if (this.hitbox.intersectsBox(ironTipHitbox)) {
         this.isBeingHit = true;
         this.health -= 10 * deltaTime;
 

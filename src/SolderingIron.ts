@@ -46,8 +46,12 @@ export class SolderingIron extends Sprite {
     this.smokeSystem = new SmokeSystem();
   }
 
-  public update(deltaTime: number, mouse: Vector2) {
-    this.updatePosition(mouse);
+  public update(
+    deltaTime: number,
+    mouse: Vector2,
+    inputType: "mouse" | "touch",
+  ) {
+    this.updatePosition(mouse, inputType);
     this.smokeSystem.update(deltaTime);
 
     // Only smoke if we are soldering AND hitting the target (sound is playing)
@@ -58,10 +62,17 @@ export class SolderingIron extends Sprite {
     }
   }
 
-  private updatePosition(mouse: Vector2) {
+  private updatePosition(mouse: Vector2, inputType: "mouse" | "touch") {
     const mouse3D = new Vector3(mouse.x, mouse.y, 0.5);
     mouse3D.unproject(this.camera);
     this.position.copy(mouse3D);
+
+    if (inputType === "touch") {
+      // Offset the iron above the touch point
+      this.position.x -= 140;
+      this.position.y += 130;
+    }
+
     // z=4.8 to be in front of mute button (z=4.5) but behind camera (z=5)
     this.position.z = 4.8;
   }
