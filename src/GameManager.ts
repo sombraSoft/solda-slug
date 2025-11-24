@@ -209,7 +209,7 @@ export class GameManager {
     );
 
     this.bozo = new Bozo(this.assetLoader.getTexture("bozo_sentado"));
-    this.ankleHitbox = new AnkleHitbox(this.camera, this.solderingIron);
+    this.ankleHitbox = new AnkleHitbox(this.solderingIron);
     this.xandao = new Xandao(this.assetLoader.getTexture("xandao"));
 
     this.bossHealthBar = new BossHealthBar();
