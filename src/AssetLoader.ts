@@ -38,8 +38,12 @@ export class AssetLoader {
     promises.push(this.loadTexture("solda", "/assets/solda.png"));
     promises.push(this.loadTexture("solda_quente", "/assets/solda_quente.png"));
     promises.push(this.loadTexture("cursor_gado", "/assets/cursor_gado.png"));
+    promises.push(
+      this.loadTexture("menu_background", "/assets/menu_background.png"),
+    );
 
     // Audio
+    promises.push(this.loadAudio("menu_theme", "/assets/menu_theme.ogg"));
     promises.push(this.loadAudio("intro", "/assets/song_intro.ogg"));
     promises.push(this.loadAudio("loop", "/assets/song_loop.ogg"));
     promises.push(this.loadAudio("start", "/assets/vaca.ogg"));

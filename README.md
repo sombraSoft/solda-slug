@@ -24,7 +24,7 @@ Em um futuro distópico não muito distante, um ex-presidente se encontra em uma
 
 Sua missão, caso decida aceitá-la, é usar um ferro de solda para libertá-lo das garras da justiça. Mas cuidado! O olhar atento de Xandão pode aparecer a qualquer momento, de qualquer canto da tela. Se ele te pegar no flagra... é GAME OVER.
 
-**Spoiler:** Não importa o que aconteça, o resultado é sempre o mesmo. A prisão era inevitável.
+**Spoiler:** Não importa o que aconteça, o resultado é sempre o mesmo (a prisão era inevitável).
 
 ## Como Jogar
 

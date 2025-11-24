@@ -61,6 +61,7 @@ export class GameManager {
   private menuScreen!: MenuScreen;
   private gameOverScreen!: GameOverScreen;
   private muteButton!: MuteButton;
+  private mainBackground!: Mesh;
   private introAnimation!: IntroAnimation;
 
   // Audio
@@ -71,7 +72,13 @@ export class GameManager {
   private gameOverSound: Audio;
   private miauSound: Audio;
   private bozoTelefoneSound: Audio;
-  private musicState: "idle" | "playing_intro" | "playing_loop" = "idle";
+  private menuThemeSound: Audio;
+  private musicState:
+    | "idle"
+    | "playing_menu"
+    | "playing_intro"
+    | "playing_loop" = "idle";
+  private audioUnlocked: boolean = false;
 
   constructor() {
     // --- Core Setup ---
@@ -112,6 +119,7 @@ export class GameManager {
     this.gameOverSound = new Audio(this.listener);
     this.miauSound = new Audio(this.listener);
     this.bozoTelefoneSound = new Audio(this.listener);
+    this.menuThemeSound = new Audio(this.listener);
 
     // --- Loading Screen ---
     this.loadingScreen = new LoadingScreen();
@@ -165,8 +173,9 @@ export class GameManager {
     // This effectively "zooms" or crops the background
     const bgGeometry = new PlaneGeometry(1920, 1080);
     const bgMaterial = new MeshBasicMaterial({ map: bgTexture });
-    const background = new Mesh(bgGeometry, bgMaterial);
-    this.scene.add(background);
+    this.mainBackground = new Mesh(bgGeometry, bgMaterial);
+    this.mainBackground.visible = false;
+    this.scene.add(this.mainBackground);
 
     // --- Initialize Game Objects with Loaded Assets ---
     this.solderingIron = new SolderingIron(
@@ -189,7 +198,10 @@ export class GameManager {
     this.scene.add(this.muteButton);
 
     // --- Screens ---
-    this.menuScreen = new MenuScreen(() => this.startIntroAnimation());
+    this.menuScreen = new MenuScreen(
+      () => this.startIntroAnimation(),
+      this.assetLoader.getTexture("menu_background"),
+    );
     this.gameOverScreen = new GameOverScreen(
       () => this.resetGame(),
       this.assetLoader.getTexture("bozo_chora"),
@@ -231,12 +243,17 @@ export class GameManager {
     this.bozoTelefoneSound.setLoop(false);
     this.bozoTelefoneSound.setVolume(0.5);
 
+    this.menuThemeSound.setBuffer(this.assetLoader.getAudio("menu_theme"));
+    this.menuThemeSound.setLoop(true);
+    this.menuThemeSound.setVolume(0.5);
+
     // Start Loop
     this.animate();
   }
 
   private startIntroAnimation() {
     this.state = "INTRO_ANIMATION";
+    if (this.menuThemeSound.isPlaying) this.menuThemeSound.stop();
     const container = document.getElementById("game-container");
     if (container) container.classList.add("no-cursor");
 
@@ -259,6 +276,7 @@ export class GameManager {
 
   private startGame() {
     this.state = "PLAYING";
+    this.mainBackground.visible = true;
 
     this.scene.add(this.bozo);
     this.scene.add(this.ankleHitbox);
@@ -275,7 +293,7 @@ export class GameManager {
     this.nextXandaoTime = this.XANDAO_TIME;
 
     // Start Music
-    if (this.musicState === "idle" && this.introSound.buffer) {
+    if (this.introSound.buffer) {
       this.introSound.play();
       this.musicState = "playing_intro";
     }
@@ -328,6 +346,7 @@ export class GameManager {
 
   private returnToMenu() {
     this.state = "MENU";
+    this.mainBackground.visible = false;
     this.canInteract = true;
     const container = document.getElementById("game-container");
     if (container) container.classList.remove("no-cursor");
@@ -345,7 +364,15 @@ export class GameManager {
     // Stop Background Music
     if (this.introSound.isPlaying) this.introSound.stop();
     if (this.loopSound.isPlaying) this.loopSound.stop();
-    this.musicState = "idle";
+
+    // Start Menu Music
+    if (this.menuThemeSound.buffer) {
+      if (this.menuThemeSound.isPlaying) this.menuThemeSound.stop();
+      this.menuThemeSound.play();
+      this.musicState = "playing_menu";
+    } else {
+      this.musicState = "idle";
+    }
   }
 
   private onResize() {
@@ -360,6 +387,8 @@ export class GameManager {
 
   private onMouseMove(event: MouseEvent) {
     if (this.state === "LOADING") return;
+
+    this.unlockAudio();
 
     const rect = this.renderer.domElement.getBoundingClientRect();
 
@@ -485,5 +514,15 @@ export class GameManager {
     }
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private unlockAudio() {
+    if (this.audioUnlocked) return;
+
+    if (this.musicState === "idle" && this.menuThemeSound.buffer) {
+      this.menuThemeSound.play();
+      this.musicState = "playing_menu";
+      this.audioUnlocked = true;
+    }
   }
 }

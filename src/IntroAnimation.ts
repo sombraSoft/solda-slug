@@ -8,7 +8,7 @@ export class IntroAnimation extends Group {
   private onComplete: () => void;
 
   // Animation parameters
-  private duration: number = 1.0; // Total duration in seconds
+  private duration: number = 0.7; // Total duration in seconds
   private startScale: number = 50; // Initial size
   private endScale: number = Math.max(GAME_WIDTH, GAME_HEIGHT) * 2; // Final size (cover screen)
 
@@ -42,7 +42,7 @@ export class IntroAnimation extends Group {
     const progress = Math.min(this.elapsedTime / this.duration, 1);
 
     // Accelerating ease (quadratic or cubic)
-    const ease = progress * progress * progress;
+    const ease = progress * progress * progress * progress;
 
     const currentScale =
       this.startScale + (this.endScale - this.startScale) * ease;
