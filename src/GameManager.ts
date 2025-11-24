@@ -425,6 +425,8 @@ export class GameManager {
   private onClick() {
     if (this.state === "LOADING") return;
 
+    this.unlockAudio();
+
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     // Check Mute Button
