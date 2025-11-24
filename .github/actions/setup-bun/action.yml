@@ -8,16 +8,11 @@ runs:
       with:
         bun-version: latest
 
-    - name: Get bun cache directory
-      id: bun-cache
-      run: echo "dir=$(bun pm cache)" >> $GITHUB_OUTPUT
-      shell: bash
-
     - name: Cache dependencies
       uses: actions/cache@v4
       id: cache-deps
       with:
-        path: ${{ steps.bun-cache.outputs.dir }}
+        path: node_modules
         key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
         restore-keys: |
           ${{ runner.os }}-bun-
