@@ -34,6 +34,8 @@
     <meta property="twitter:image" content="https://sombrasoft.github.io/solda-slug/assets/solda_slug_opengraph.png">
     
     <link rel="icon" type="image/png" href="/assets/bozo.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
     <title>Solda Slug</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,11 +45,11 @@
 
 <body>
     <div id="game-container"></div>
-    <div id="about-container">
-        <div class="about-game">
     <div id="rotate-device-overlay" style="display: none;">
         <p>Please rotate your device to landscape mode.</p>
     </div>
+    <div id="about-container">
+        <div class="about-game">
             <h2>SOBRE O JOGO</h2>
             <p class="bio">
                 Em um futuro distópico não muito distante, um ex-presidente se encontra em uma situação delicada: uma tornozeleira eletrônica, cortesia de seu fã número um, o temível Xandão. Sua missão é usar um ferro de solda para libertá-lo, mas cuidado! O olhar atento de Xandão pode aparecer a qualquer momento. Se ele te pegar no flagra... é GAME OVER.
@@ -84,6 +86,17 @@
         </div>
     </div>
     <script type="module" src="./src/main.ts"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>
