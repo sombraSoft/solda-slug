@@ -205,6 +205,7 @@ export class GameManager {
     this.gameOverScreen = new GameOverScreen(
       () => this.resetGame(),
       this.assetLoader.getTexture("bozo_chora"),
+      this.assetLoader.getTexture("xandao"),
     );
 
     this.scene.add(this.menuScreen);

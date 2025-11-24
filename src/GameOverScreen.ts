@@ -11,10 +11,16 @@ import { TextButton } from "./TextButton";
 
 export class GameOverScreen extends Group {
   public retryButton: TextButton;
+  public retryButton2: TextButton;
   private bozoSprite: Sprite;
+  private xandaoSprite: Sprite;
   private timeElapsed: number = 0;
 
-  constructor(onRetry: () => void, bozoTexture: Texture) {
+  constructor(
+    onRetry: () => void,
+    bozoTexture: Texture,
+    xandaoTexture: Texture,
+  ) {
     super();
 
     // Game Over Text
@@ -22,13 +28,17 @@ export class GameOverScreen extends Group {
     const titleMaterial = new SpriteMaterial({ map: titleTexture });
     const title = new Sprite(titleMaterial);
     title.scale.set(titleTexture.image.width, titleTexture.image.height, 1);
-    title.position.set(0, 100, 0); // Moved up slightly
+    title.position.set(0, 150, 0);
     this.add(title);
 
     // Retry Button
-    this.retryButton = new TextButton("TENTAR DE NOVO", 40, onRetry);
-    this.retryButton.position.set(0, 0, 0); // Moved up
+    this.retryButton = new TextButton("TENTAR DE NOVO?", 40, onRetry);
+    this.retryButton.position.set(0, 50, 0);
     this.add(this.retryButton);
+
+    this.retryButton2 = new TextButton("(esse jogo não dá para ganhar)", 30, onRetry);
+    this.retryButton2.position.set(0, 0, 0);
+    this.add(this.retryButton2);
 
     // Bozo Sprite
     const bozoMaterial = new SpriteMaterial({
@@ -42,8 +52,22 @@ export class GameOverScreen extends Group {
     const aspect = image.width / image.height;
     const height = 500;
     this.bozoSprite.scale.set(height * aspect, height, 1);
-    this.bozoSprite.position.set(0, -300, 0); // Below retry button
+    this.bozoSprite.position.set(0, -300, 0.1); // Below retry button
     this.add(this.bozoSprite);
+
+    // Xandao Sprite
+    const xandaoMaterial = new SpriteMaterial({
+      map: xandaoTexture,
+      transparent: true,
+      opacity: 0,
+    });
+    this.xandaoSprite = new Sprite(xandaoMaterial);
+    const xandaoImage = xandaoTexture.image as HTMLImageElement;
+    const xandaoAspect = xandaoImage.width / xandaoImage.height;
+    const xandaoHeight = 500;
+    this.xandaoSprite.scale.set(xandaoHeight * xandaoAspect, xandaoHeight, 1);
+    this.xandaoSprite.position.set(230, -300, 0);
+    this.add(this.xandaoSprite);
 
     this.position.z = 4; // Ensure it's on top (camera is at z=5)
   }
@@ -53,11 +77,13 @@ export class GameOverScreen extends Group {
     // Fade in over 2 seconds
     const opacity = Math.min(this.timeElapsed / 2, 1);
     this.bozoSprite.material.opacity = opacity;
+    this.xandaoSprite.material.opacity = opacity;
   }
 
   public reset() {
     this.timeElapsed = 0;
     this.bozoSprite.material.opacity = 0;
+    this.xandaoSprite.material.opacity = 0;
   }
 
   private createTexture(
