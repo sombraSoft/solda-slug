@@ -236,7 +236,7 @@ export class GameManager {
 
     this.miauSound.setBuffer(this.assetLoader.getAudio("miau"));
     this.miauSound.setLoop(false);
-    this.miauSound.setVolume(0.5);
+    this.miauSound.setVolume(0.7);
 
     this.bozoTelefoneSound.setBuffer(
       this.assetLoader.getAudio("bozo_telefone"),
@@ -258,7 +258,7 @@ export class GameManager {
     const container = document.getElementById("game-container");
     if (container) container.classList.add("no-cursor");
 
-    this.scene.remove(this.menuScreen);
+    this.menuScreen.hideContent();
     this.scene.remove(this.gameOverScreen);
 
     // Stop any previous sounds
@@ -277,6 +277,7 @@ export class GameManager {
 
   private startGame() {
     this.state = "PLAYING";
+    this.scene.remove(this.menuScreen);
     this.mainBackground.visible = true;
 
     this.scene.add(this.bozo);
@@ -330,10 +331,12 @@ export class GameManager {
       if (this.miauSound.isPlaying) this.miauSound.stop();
       this.miauSound.play();
     }
-    if (this.bozoTelefoneSound.buffer) {
-      if (this.bozoTelefoneSound.isPlaying) this.bozoTelefoneSound.stop();
-      this.bozoTelefoneSound.play();
-    }
+    setTimeout(() => {
+      if (this.bozoTelefoneSound.buffer) {
+        if (this.bozoTelefoneSound.isPlaying) this.bozoTelefoneSound.stop();
+        this.bozoTelefoneSound.play();
+      }
+    }, 1000);
 
     // Prevent immediate retry click
     setTimeout(() => {

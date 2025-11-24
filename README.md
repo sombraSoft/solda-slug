@@ -55,6 +55,16 @@ Quer inspecionar o código-fonte desta obra-prima da engenharia de software? Sig
     bun run dev
     ```
 
+## Feito Com
+
+Este projeto foi construído com as seguintes tecnologias:
+
+- **Runtime:** [Bun](https://bun.sh/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Renderização:** [Three.js](https://threejs.org/)
+- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+- **Linter/Formatter:** [Biome](https://biomejs.dev/)
+
 ## Licença
 
 Este projeto é distribuído sob a licença **Creative Commons BY-NC-SA 4.0**. Isso significa que você é livre para compartilhar e adaptar este jogo, desde que dê o crédito, não o use para fins comerciais e o compartilhe sob a mesma licença. Veja o arquivo `LICENSE.md` para mais detalhes.

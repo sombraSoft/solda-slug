@@ -13,7 +13,7 @@ body {
 #game-container {
   position: relative;
   width: 100%;
-  max-width: 960px; /* Or whatever max width you want */
+  max-width: 960px;
   aspect-ratio: 4 / 3;
   margin: 0 auto;
   background-color: #000;
@@ -90,7 +90,7 @@ canvas {
 
 #about-container .bio {
   font-size: 14px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -109,6 +109,7 @@ canvas {
   justify-content: center;
   gap: 40px;
   flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 #about-container .social-links a {
@@ -140,4 +141,39 @@ canvas {
   50% {
     opacity: 0;
   }
+}
+
+#about-container .credits {
+  margin-top: 60px;
+}
+
+#about-container .credits-list {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+#about-container .credits-list li {
+  margin-bottom: 15px;
+}
+
+#about-container .credits-list a {
+  color: #fff;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+#about-container .credits-list a:hover {
+  color: #00ff00;
+}
+
+#about-container .about-game {
+  margin-bottom: 60px;
+}
+
+#about-container .legal-disclaimer {
+  margin-top: 30px;
+  font-size: 12px;
+  color: #888;
 }

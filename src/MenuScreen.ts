@@ -28,7 +28,12 @@ export class MenuScreen extends Group {
     this.position.z = 4; // Ensure it's on top (camera is at z=5)
   }
 
+  public hideContent() {
+    this.startButton.visible = false;
+  }
+
   public reset() {
     this.startButton.onHover(false);
+    this.startButton.visible = true;
   }
 }

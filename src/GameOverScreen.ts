@@ -91,7 +91,7 @@ export class GameOverScreen extends Group {
         ? "Você destruiu a tornozeleira mas o xandão\ndecretou prisão preventiva e"
         : "O Xandão te pegou na tampinha e";
 
-    const explainTexture = this.createTexture(explainText, 30, "#ff0000");
+    const explainTexture = this.createTexture(explainText, 30, "#ffffff");
     const explainMaterial = new SpriteMaterial({ map: explainTexture });
     this.explain = new Sprite(explainMaterial);
     this.explain.scale.set(
