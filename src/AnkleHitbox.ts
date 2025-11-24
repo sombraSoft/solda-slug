@@ -1,12 +1,4 @@
-import {
-  Box3,
-  BoxGeometry,
-  Mesh,
-  MeshBasicMaterial,
-  type OrthographicCamera,
-  type PerspectiveCamera,
-  Vector3,
-} from "three";
+import { Box3, BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from "three";
 import { ANKLE_MONITOR_OFFSET, BOZO_POSITION } from "./constants";
 import type { SolderingIron } from "./SolderingIron";
 
@@ -15,10 +7,7 @@ export class AnkleHitbox extends Mesh {
   public isBeingHit = false;
   private hitbox: Box3;
 
-  constructor(
-    private camera: OrthographicCamera | PerspectiveCamera,
-    private solderingIron: SolderingIron,
-  ) {
+  constructor(private solderingIron: SolderingIron) {
     const geometry = new BoxGeometry(50, 30, 1);
     const material = new MeshBasicMaterial({
       color: 0xff0000,

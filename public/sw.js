@@ -37,11 +37,13 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const response = await cache.match(event.request);
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        cache.put(event.request, networkResponse.clone());
+        return networkResponse;
+      });
+      return response || fetchPromise;
     }),
   );
 });

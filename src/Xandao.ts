@@ -33,8 +33,6 @@ export class Xandao extends Sprite {
 
     const image = texture.image as HTMLImageElement;
     const aspectRatio = image.width / image.height;
-    console.log(image.width);
-    console.log(image.height);
     this.scale.set(XANDAO_SCALE * aspectRatio, XANDAO_SCALE, 1);
 
     this.renderOrder = 200; // High render order to appear on top

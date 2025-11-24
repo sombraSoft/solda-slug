@@ -97,7 +97,7 @@ export class GameOverScreen extends Group {
       explainTexture.image.height,
       1,
     );
-    this.explain.position.set(0, 280, 0);
+    this.explain.position.set(0, 290, 0);
     this.add(this.explain);
   }
 
