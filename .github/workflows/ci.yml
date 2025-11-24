@@ -44,7 +44,7 @@ jobs:
       - name: Run Build
         run: bun run build
       - name: Upload artifact
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
@@ -52,7 +52,7 @@ jobs:
   deploy:
     name: "Deploy to Github Pages"
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       pages: write
       id-token: write
