@@ -668,6 +668,8 @@ export class GameManager {
           this.musicState = "playing_loop";
         }
       }
+    } else if (this.state === "MENU") {
+      this.menuScreen.update(deltaTime);
     } else if (this.state === "GAME_OVER") {
       this.gameOverScreen.update(deltaTime);
     }

@@ -28,20 +28,18 @@ export class GameOverScreen extends Group {
     const titleMaterial = new SpriteMaterial({ map: titleTexture });
     const title = new Sprite(titleMaterial);
     title.scale.set(titleTexture.image.width, titleTexture.image.height, 1);
-    title.position.set(0, 150, 0);
+    title.position.set(0, 220, 0);
     this.add(title);
 
     // Retry Button
-    this.retryButton = new TextButton("TENTAR DE NOVO?", 50, onRetry);
+    this.retryButton = new TextButton("TENTAR DE NOVO", 80, onRetry);
     this.retryButton.position.set(0, 50, 0);
+    this.retryButton.userData.baseScaleX = this.retryButton.scale.x;
+    this.retryButton.userData.baseScaleY = this.retryButton.scale.y;
     this.add(this.retryButton);
 
-    this.retryButton2 = new TextButton(
-      "(esse jogo não dá para ganhar)",
-      30,
-      onRetry,
-    );
-    this.retryButton2.position.set(0, 0, 0);
+    this.retryButton2 = new TextButton("(em vão, mas pode)", 20, onRetry);
+    this.retryButton2.position.set(0, -10, 0);
     this.add(this.retryButton2);
 
     // Bozo Sprite
@@ -99,7 +97,7 @@ export class GameOverScreen extends Group {
       explainTexture.image.height,
       1,
     );
-    this.explain.position.set(0, 230, 0);
+    this.explain.position.set(0, 280, 0);
     this.add(this.explain);
   }
 
@@ -109,6 +107,18 @@ export class GameOverScreen extends Group {
     const opacity = Math.min(this.timeElapsed / 2, 1);
     this.bozoSprite.material.opacity = opacity;
     this.xandaoSprite.material.opacity = opacity;
+
+    // Pulse animation for the retry button
+    const pulseSpeed = 3;
+    const pulseMagnitude = 0.05;
+    const scaleFactor =
+      1 + Math.sin(this.timeElapsed * pulseSpeed) * pulseMagnitude;
+
+    this.retryButton.scale.set(
+      this.retryButton.userData.baseScaleX * scaleFactor,
+      this.retryButton.userData.baseScaleY * scaleFactor,
+      1,
+    );
   }
 
   public reset() {
