@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup and Install
         uses: ./.github/actions/setup-bun
 
@@ -32,7 +32,7 @@ jobs:
     needs: install
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup and Install
         uses: ./.github/actions/setup-bun
       - name: Run biome ci
@@ -51,7 +51,7 @@ jobs:
             echo "VITE_BASE_PATH=/" >> $GITHUB_ENV
           fi
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
       - name: Setup and Install
