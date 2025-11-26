@@ -1,4 +1,4 @@
-const CACHE_NAME = "solda-slug-cache-v1";
+const CACHE_NAME = "solda-slug-cache-v2";
 const urlsToCache = [
   "./",
   "./index.html",
@@ -27,6 +27,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Opened cache");
@@ -35,7 +36,15 @@ self.addEventListener("install", (event) => {
   );
 });
 
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") {
+    return;
+  }
+
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
       const response = await cache.match(event.request);
