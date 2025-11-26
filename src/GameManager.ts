@@ -341,7 +341,7 @@ export class GameManager {
   }
 
   private startGame() {
-    trackEvent("StartGame");
+    trackEvent("ViewContent", { content_name: "StartGame" });
     this.state = "PLAYING";
     this.scene.remove(this.menuScreen);
     this.mainBackground.visible = true;
@@ -368,7 +368,7 @@ export class GameManager {
   }
 
   private endGame(reason: "destroyed" | "caught") {
-    trackEvent("GameOver", { result: reason });
+    trackEvent("ViewContent", { content_name: "GameOver", result: reason });
     this.state = "GAME_OVER";
     this.canInteract = false;
     const container = document.getElementById("game-container");
@@ -412,7 +412,7 @@ export class GameManager {
   }
 
   private resetGame() {
-    trackEvent("PlayAgain");
+    trackEvent("ViewContent", { content_name: "PlayAgain" });
     this.startIntroAnimation();
   }
 
