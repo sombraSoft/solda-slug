@@ -1,6 +1,25 @@
 {
-  "name": "game",
+  "name": "solda-slug",
+  "version": "1.0.0",
+  "description": "A mais nova e provavelmente a única simulação de remoção de tornozeleira eletrônica com um ferro de solda.",
   "type": "module",
+  "author": "sombraSoft",
+  "license": "CC-BY-NC-SA-4.0",
+  "homepage": "https://sombrasoft.github.io/solda-slug/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sombraSoft/solda-slug.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sombraSoft/solda-slug/issues"
+  },
+  "keywords": [
+    "game",
+    "threejs",
+    "simulation",
+    "parody",
+    "browser-game"
+  ],
   "private": true,
   "scripts": {
     "build": "vite build",
