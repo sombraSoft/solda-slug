@@ -35,13 +35,20 @@ Sua missão, caso decida aceitá-la, é usar um ferro de solda para libertá-lo 
 
 Quer inspecionar o código-fonte desta obra-prima da engenharia de software? Siga os passos abaixo.
 
-1. **Clone o repositório (obviamente):**
+1. **Clone o repositório (com Git LFS):**
+
+    Este projeto utiliza [Git LFS](https://git-lfs.com/) para gerenciar assets pesados (imagens e áudio). Certifique-se de ter o Git LFS instalado e configurado.
 
     ```bash
     git clone https://github.com/sombraSoft/solda-slug.git
+    cd solda-slug
+    git lfs install
+    git lfs pull
     ```
 
 2. **Instale as dependências (com o coelhinho rápido):**
+
+    Certifique-se de ter o [Bun instalado](https://bun.sh/).
 
     ```bash
     bun install
@@ -51,6 +58,23 @@ Quer inspecionar o código-fonte desta obra-prima da engenharia de software? Sig
 
     ```bash
     bun run dev
+    ```
+
+### Outros Comandos Úteis
+
+Para manter a qualidade do código (e evitar que o Xandão reclame da bagunça), utilize os comandos abaixo:
+
+- **Lint e Formatação (Biome):**
+
+    ```bash
+    bun run lint    # Apenas verifica problemas
+    bun run lint:fix  # Verifica e corrige problemas automaticamente
+    ```
+
+- **Build de Produção:**
+
+    ```bash
+    bun run build   # Gera os arquivos otimizados na pasta dist/
     ```
 
 ## Feito Com

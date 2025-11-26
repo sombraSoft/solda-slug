@@ -6,7 +6,7 @@
     "build": "vite build",
     "ci": "biome ci",
     "dev": "vite",
-    "format": "biome check --write .",
+    "lint:fix": "biome check --write .",
     "lint": "biome check .",
     "preview": "vite preview"
   },
