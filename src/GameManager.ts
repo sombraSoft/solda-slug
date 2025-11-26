@@ -412,6 +412,7 @@ export class GameManager {
   }
 
   private resetGame() {
+    trackEvent("PlayAgain");
     this.startIntroAnimation();
   }
 
