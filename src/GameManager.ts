@@ -14,6 +14,7 @@ import {
 } from "three";
 import { AnkleHitbox } from "./AnkleHitbox";
 import { AssetLoader } from "./AssetLoader";
+import { trackEvent } from "./analytics";
 import { BossHealthBar } from "./BossHealthBar";
 import { Bozo } from "./Bozo";
 import { GAME_HEIGHT, GAME_WIDTH } from "./constants";
@@ -340,6 +341,7 @@ export class GameManager {
   }
 
   private startGame() {
+    trackEvent("StartGame");
     this.state = "PLAYING";
     this.scene.remove(this.menuScreen);
     this.mainBackground.visible = true;
@@ -366,6 +368,7 @@ export class GameManager {
   }
 
   private endGame(reason: "destroyed" | "caught") {
+    trackEvent("GameOver", { result: reason });
     this.state = "GAME_OVER";
     this.canInteract = false;
     const container = document.getElementById("game-container");

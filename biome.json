@@ -6,7 +6,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": true,
+    "includes": ["**", "!index.html"]
   },
   "formatter": {
     "enabled": true,

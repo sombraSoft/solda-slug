@@ -5,12 +5,25 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JNMNY8NY7C"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        // biome-ignore lint/complexity/noArguments: Just copying as they provide
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
         gtag('config', 'G-JNMNY8NY7C');
     </script>
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2442682012847812');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Um jogo de paródia onde você precisa libertar um ex-presidente de sua tornozeleira eletrônica sem ser pego pelo temível Xandão.">
@@ -44,6 +57,9 @@
 </head>
 
 <body>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=2442682012847812&ev=PageView&noscript=1"
+    /></noscript>
     <div id="game-container"></div>
     <div id="rotate-device-overlay" style="display: none;">
         <p>Please rotate your device to landscape mode.</p>
@@ -65,9 +81,9 @@
             Me encontra aqui?
         </p>
         <div class="social-links">
-            <a href="https://github.com/sombraSoft/solda-slug" target="_blank">GITHUB</a>
-            <a href="https://www.linkedin.com/in/joaosombrio/" target="_blank">LINKEDIN</a>
-            <a href="https://www.instagram.com/joao.sombrio/" target="_blank">INSTAGRAM</a>
+            <a href="https://github.com/sombraSoft/solda-slug" target="_blank" onclick="fbq('track', 'Contact', {content_name: 'GitHub'})">GITHUB</a>
+            <a href="https://www.linkedin.com/in/joaosombrio/" target="_blank" onclick="fbq('track', 'Contact', {content_name: 'LinkedIn'})">LINKEDIN</a>
+            <a href="https://www.instagram.com/joao.sombrio/" target="_blank" onclick="fbq('track', 'Contact', {content_name: 'Instagram'})">INSTAGRAM</a>
         </div>
         <div class="credits">
             <h2>CRÉDITOS E AVISOS</h2>
