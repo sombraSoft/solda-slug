@@ -89,7 +89,7 @@ Este projeto foi construído com as seguintes tecnologias:
 
 ## Licença
 
-Este projeto é distribuído sob a licença **Creative Commons BY-NC-SA 4.0**. Isso significa que você é livre para compartilhar e adaptar este jogo, desde que dê o crédito, não o use para fins comerciais e o compartilhe sob a mesma licença. Veja o arquivo `LICENSE.md` para mais detalhes.
+Este projeto é distribuído sob a licença **MIT**. Isso significa que você é livre para usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do software. Veja o arquivo `LICENSE.md` para mais detalhes.
 
 ---
 

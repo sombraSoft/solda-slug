@@ -4,7 +4,7 @@
   "description": "A mais nova e provavelmente a única simulação de remoção de tornozeleira eletrônica com um ferro de solda.",
   "type": "module",
   "author": "sombraSoft",
-  "license": "CC-BY-NC-SA-4.0",
+  "license": "MIT",
   "homepage": "https://sombrasoft.github.io/solda-slug/",
   "repository": {
     "type": "git",
