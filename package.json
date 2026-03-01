@@ -39,6 +39,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "three": "^0.182.0"
+    "three": "^0.183.2"
   }
 }
